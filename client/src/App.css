@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+body {
+  background-image: url(/home/eyalg/Development/code/Projects/ShopWave/client/src/ShopWaveBack.jpg);
+  background-size: cover;
+  background-position: center center;
+}
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
