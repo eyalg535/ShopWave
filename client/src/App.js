@@ -33,7 +33,7 @@ function App() {
             {user ? (
               <>
                 <Route path="/" element={<Home user={user} />} />
-                {/* <Route path="/shop" element={<Shop />} />
+                {/* <Route path="/shop" element={<Home />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/profile" element={<Profile />} /> */}
                 <Route path="/about" element={<About />} />
@@ -43,6 +43,11 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<SignUpForm setUser={setUser} />} />
                 <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+                <Route path="/shop" element={<Home />} />
+                <Route path="/cart" element={<Home />} />
+                <Route path="/profile" element={<Home />} />
+                <Route path="/about" element={<Home />} />
+
               </>
             )}
           </Routes>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Error, Input, FormField, Label, Textarea } from "./styles";
 
 function LoginForm({ onLogin }) {
@@ -7,6 +7,7 @@ function LoginForm({ onLogin }) {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,7 +21,10 @@ function LoginForm({ onLogin }) {
     }).then((r) => {
       setIsLoading(false);
       if (r.ok) {
-        r.json().then((user) => onLogin(user));
+        r.json().then((user) => {
+          onLogin(user);
+        navigate('/');
+        });
       } else {
         r.json().then((err) => setErrors(err.errors));
       }
