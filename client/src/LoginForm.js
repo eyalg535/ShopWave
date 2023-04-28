@@ -8,7 +8,6 @@ function LoginForm({ onLogin }) {
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true)
@@ -44,11 +43,10 @@ function LoginForm({ onLogin }) {
           {isLoading ? "Loading..." : "Login"}
         </button>
         <FormField>
-  {errors && Array.isArray(errors) && errors.map((err) => (
-    <Error key={err}>{err}</Error>
-  ))}
-</FormField>
-
+          {errors && Array.isArray(errors) && errors.map((err) => (
+            <Error key={err}>{err}</Error>
+          ))}
+        </FormField>
       </form>
       <p>
         Don't have an account? <Link to="/signup">Sign up</Link>
