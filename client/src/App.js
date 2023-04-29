@@ -41,7 +41,7 @@ function App() {
             ) : (
               <>
                 <Route path="/" element={<Home />} />
-                <Route path="/signup" element={<SignUpForm setUser={setUser} />} />
+                <Route path="/signup" element={<SignUpForm onLogin={handleLogin} />} />
                 <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
                 <Route path="/shop" element={<Home />} />
                 <Route path="/cart" element={<Home />} />
