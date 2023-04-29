@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :product_reviews
   resources :products
   resources :users
 
