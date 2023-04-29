@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './Navbar.css';
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
+import ProductPage from './ProductPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,9 +34,9 @@ function App() {
             {user ? (
               <>
                 <Route path="/" element={<Home user={user} />} />
-                {/* <Route path="/shop" element={<Home />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/profile" element={<Profile />} /> */}
+                <Route path="/shop" element={<ProductPage />} />
+                {/* <Route path="/cart" element={<Cart />} /> */}
+                {/* <Route path="/profile" element={<Profile />} /> */}
                 <Route path="/about" element={<About />} />
               </>
             ) : (

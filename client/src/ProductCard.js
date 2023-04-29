@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Button, Rating } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+import Rating from 'react-rating';
 
 function ProductCard(props) {
   return (
@@ -13,7 +14,7 @@ function ProductCard(props) {
         <Card.Text>
           Quantity: {props.quantity}
         </Card.Text>
-        <Rating value={props.rating} readOnly />
+        <Rating initialRating={props.rating} readonly />
         <Button variant="danger" onClick={props.onRemove}>
           Remove
         </Button>
