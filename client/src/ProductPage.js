@@ -9,7 +9,7 @@ function ProductPage() {
       .then(response => response.json())
       .then(data => setProducts(data))
       .catch(error => console.error(error));
-  }, [products]);
+  }, []);
 
   const handleRemove = (productId) => {
     const updatedProducts = products.filter(product => product.id !== productId);
