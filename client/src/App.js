@@ -8,6 +8,7 @@ import './Navbar.css';
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 import ProductPage from './ProductPage';
+import CartPage from './CartPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,7 +36,7 @@ function App() {
               <>
                 <Route path="/" element={<Home user={user} />} />
                 <Route path="/shop" element={<ProductPage />} />
-                {/* <Route path="/cart" element={<Cart />} /> */}
+                <Route path="/cart" element={<CartPage />} />
                 {/* <Route path="/profile" element={<Profile />} /> */}
                 <Route path="/about" element={<About />} />
               </>

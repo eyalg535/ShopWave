@@ -1,9 +1,12 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
-// import Rating from 'react-rating';
 import BasicRating from './BasicRating';
 
 function ProductCard(props) {
+  const handleAddToCart = () => {
+    props.onAddToCart(props.product);
+  };
+
   return (
     <Card style={{ width: '18rem' }}>
       <Card.Img variant="top" src={props.image} />
@@ -16,9 +19,11 @@ function ProductCard(props) {
           Quantity: {props.quantity}
         </Card.Text>
         <BasicRating />
-        {/* <Rating initialRating={props.rating} readonly /> */}
         <Button variant="danger" onClick={props.onRemove}>
           Remove
+        </Button>
+        <Button variant="primary" onClick={handleAddToCart}>
+          Add to Cart
         </Button>
       </Card.Body>
     </Card>

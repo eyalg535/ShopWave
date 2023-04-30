@@ -7,7 +7,7 @@ require 'faker'
     quantity: Faker::Number.between(from: 1, to: 100),
     description: Faker::Lorem.paragraph(sentence_count: 2),
     rate: Faker::Number.between(from: 1, to: 5),
-    image: Faker::LoremPixel.image(size: "300x300", is_gray: false, category: 'food'),
-    category: Faker::Commerce.department(max: 1)  
-)
+    image: "https://loremflickr.com/#{rand(150..200)}/#{rand(150..200)}/all",
+    category: Faker::Commerce.department(max: 1)
+  )
 end

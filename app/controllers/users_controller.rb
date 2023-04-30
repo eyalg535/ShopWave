@@ -20,6 +20,14 @@ class UsersController < ApplicationController
     render json: @current_user
   end
 
+  def add_to_cart
+    product = Product.find(params[:id])
+    cart_item = CartItem.find_or_initialize_by(user: @current_user, product: product)
+    cart_item.quantity += 1
+    cart_item.save
+    render json: cart_item, status: :created
+  end
+
   private
 
   def user_params

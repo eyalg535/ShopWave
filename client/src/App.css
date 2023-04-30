@@ -43,3 +43,14 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.product-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card {
+  margin: 25px;
+}
+
