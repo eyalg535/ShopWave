@@ -1,18 +1,22 @@
 Rails.application.routes.draw do
-  
-  resources :cart_items
   resources :reviews
+  resources :orders
   resources :products
+  resources :carts
   resources :users
-  resources :carts, only: [:index, :create, :update, :destroy]
+  post("/login", to: "sessions#create")
+  post '/signup', to: 'users#create'
+  patch '/cart/:id', to: 'carts#update'
+  get("/users", to: "users#index")
+  get("/users/:id", to: "users#show")
+  get("/cart/:id", to: "carts#show")
+  # get("/users/:id/cart/id:/order", to: "orders#show")
+  get '/users/:id/carts', to: 'carts#checkout'
 
-  post "/signup", to: "users#create"
-  get "/me", to: "users#show"
-  post "/login", to: "sessions#create"
-  delete "/logout", to: "sessions#destroy"
-  get "/shop", to: "products#index"
-  # post "/add_to_cart/:product_id", to: "carts#add_to_cart", as: "add_to_cart"
-  # Routing logic: fallback requests for React Router.
-  # Leave this here to help deploy your app later!
-  get "*path", to: "fallback#index", constraints: ->(req) { !req.xhr? && req.format.html? }
+  get("/products", to: "products#index")
+  get("/products/:id", to: "products#show")
+  delete("/logout", to: "sessions#destroy")
+  # get '/cart/:id', to: "cart#checkout"
+  get("/me", to: "users#me")
+  get('users/:id/carts/current_user_cart', to: 'carts#current_user_cart')
 end
