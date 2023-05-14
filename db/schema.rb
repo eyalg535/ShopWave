@@ -10,43 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_29_005945) do
+ActiveRecord::Schema.define(version: 2023_05_14_025942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "product_reviews", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
-    t.integer "rating"
-    t.bigint "product_id", null: false
-    t.bigint "user_id", null: false
+  create_table "carts", force: :cascade do |t|
+    t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["product_id"], name: "index_product_reviews_on_product_id"
-    t.index ["user_id"], name: "index_product_reviews_on_user_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "cart_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "products", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.float "price"
-    t.integer "quantity"
-    t.float "rate"
+    t.string "title"
+    t.integer "price"
+    t.string "description"
+    t.string "image"
+    t.string "image1"
+    t.string "image2"
+    t.string "image3"
+    t.string "category"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "image"
-    t.string "category"
+    t.integer "user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.integer "user_id"
+    t.text "content"
+    t.integer "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "password_digest"
+    t.string "address"
     t.string "email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "product_reviews", "products"
-  add_foreign_key "product_reviews", "users"
 end
