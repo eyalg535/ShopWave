@@ -1,11 +1,17 @@
 import React from "react";
 import Order from "./Order";
 
-function Cart(props) {
+function Cart({ cart, orders }) {
+  console.log("props order", orders);
+
+  if (!Array.isArray(orders)) {
+    return null; // or return a loading indicator or an empty state message
+  }
+
   return (
     <div className="container">
       <div className="row row-cols-1 row-cols-md-4">
-        {props.orders.map((order) => (
+        {orders.map((order) => (
           <div className="col mb-4" key={order.id}>
             <Order order={order} product={order.product} />
           </div>
@@ -14,5 +20,7 @@ function Cart(props) {
     </div>
   );
 }
+
+
 
 export default Cart;

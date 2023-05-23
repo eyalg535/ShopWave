@@ -5,48 +5,30 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
 
-function Checkout({ user, currentUserId, carts, products, orders, setCarts }) {
-const navigate = useNavigate()
-  const [currentCart, setCurrentCart] = useState([])
-  const [currentUser, setCurrentUser] = useState(null)
+function Checkout({ user, currentUserId, products, setCarts, orders }) {
+  const navigate = useNavigate()
+  const [currentCart, setCurrentCart] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     if (carts.length > 0) {
-  //       setCurrentCart(carts[carts.length - 1]);
-  //     }
-  //     if (currentUserId) {
-  //       try {
-  //         const response = await fetch(`/users/${currentUserId}`);
-  //         if (response.ok) {
-  //           const data = await response.json();
-  //           setCurrentUser(data);
-  //         } else {
-  //           throw new Error('Network response was not ok.');
-  //         }
-  //       } catch (error) {
-  //         console.error('There was an error fetching the user data:', error);
-  //       }
-  //     }
-  //   }
-  //   fetchData();
-  // }, [carts, currentUserId]);  
   useEffect(() => {
-    async function fetchCurrentCart() {
-      if (currentUserId) {
-        const response = await fetch(`/cart/${currentUserId}`);
+    const fetchCartData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/users/${currentUserId}/carts/current_user_cart`);
         const cartData = await response.json();
-        if (cartData.length > 0) {
-          setCurrentCart(cartData[cartData.length - 1]);
-        }
+        setCurrentCart(cartData);
+      } catch (error) {
+        console.log("Error fetching cart data:", error);
       }
-    }
-    fetchCurrentCart();
-  }, [currentUserId]);
-  
-  
+      setIsLoading(false);
+    };
 
-  const purchased = async () => {
+    if (currentUserId) {
+      fetchCartData();
+    }
+  }, [currentUserId]);
+
+  const purchase = async () => {
     try {
       const res = await fetch("/carts", {
         method: "POST",
@@ -56,55 +38,129 @@ const navigate = useNavigate()
           orders: currentCart.orders,
         }),
       });
-      const user = await res.json();
-      alert("Purchased");
-      navigate("/", { state: { user: user.id } });
+  
+      if (res.ok) {
+        // Fetch the newly created cart data
+        const cartResponse = await fetch(`/users/${currentUserId}/carts`);
+        const cartData = await cartResponse.json();
+  
+        // Find the latest cart (assuming it's the first one in the response)
+        const latestCart = cartData.carts[0];
+  
+        // Update the current cart with the newly created cart
+        setCurrentCart(latestCart);
+  
+        // Clear the current cart
+        // setCurrentCart(null);
+  
+        // Remove the purchased product from the products list
+        const purchasedProductIds = currentCart.orders.map((order) => order.product.id);
+        const updatedProducts = products.filter(
+          (product) => !purchasedProductIds.includes(product.id)
+        );
+        setCarts(updatedProducts);
+  
+        // Delete the purchased product from the API
+        await Promise.all(
+          purchasedProductIds.map((productId) =>
+            fetch(`/products/${productId}`, {
+              method: "DELETE",
+            })
+          )
+        );
+      } else {
+        console.error("Failed to purchase. Response:", res);
+      }
+  
+      // Navigate back to the home page
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
   };
   
-
-  const removeOrder = (order) => {
-    fetch(`/carts/${currentCart.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: currentCart.id,
-        order: order,
-      }),
-    })
-      .then((res) => res.json())
-      .then((user) =>
-        setCurrentCart({
-          current_cart:
-            user.carts === 1 ? user.carts[0] : user.carts.slice(-1)[0],
+  
+  
+  const removeOrder = (orderId) => {
+    if (currentCart && currentCart.id) {
+      fetch(`/carts/${currentCart.id}/orders/${orderId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            const updatedOrders = currentCart.orders.filter(
+              (order) => order.id !== orderId
+            );
+            setCurrentCart({ ...currentCart, orders: updatedOrders });
+          } else {
+          }
         })
-      );
+        .catch((error) => {
+        });
+    }
   };
 
-const currentCartProducts = products.filter(product => currentCart.products && currentCart.products.includes(product.id));
+  const emptyCart = () => {
+    if (currentCart && currentCart.id) {
+      fetch(`/carts/${currentCart.id}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            setCurrentCart({ ...currentCart, orders: [] });
+          } else {
+          }
+        })
+        .catch((error) => {
+        });
+    }
+  };
 
+  const currentCartProducts = products.filter((product) =>
+    currentCart?.products?.includes(product.id)
+  ) ?? [];
 
   let totalPrice = currentCart && currentCart.orders
-  ? currentCart.orders.map((o) => o.product?.price || 0).reduce((a, b) => a + b, 0)
-  : 0;
+    ? currentCart.orders
+      .map((o) => o.product?.price || 0)
+      .reduce((a, b) => a + b, 0)
+    : 0;
+
+  if (isLoading) {
+    return <p>Loading cart data...</p>;
+  }
+
+  if (!currentUserId) {
+    return <p>Please log in to view the cart.</p>;
+  }
+
+  if (!currentCart) {
+    return <p>Failed to fetch cart data.</p>;
+  }
+
   return (
     <div>
       <h1>Order Summary</h1>
-
+      <br />
       <div>
-        {currentCart.created_at}
+        <button
+          type="button"
+          className="btn btn-danger mr-2 md-"
+          onClick={emptyCart}
+        >
+          Empty Cart
+        </button>
+      </div>
+      <br />
+      <div>
+        {currentCart?.created_at}
         <br />
         <br />
         <br />
         <EditCart
-        currentCart={currentCart}
-        currentCartProducts={currentCartProducts}
-         setCarts={setCarts}
-          // cart={currentCart}
-          // orders={orders}
-          //  removeOrder={removeOrder}
+          currentCart={currentCart}
+          removeOrder={(orderId) => removeOrder(orderId)}
+          purchase={purchase} // Pass the purchase function as a prop
         />
       </div>
 
@@ -123,6 +179,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
           <Col>
             <div>
               <form>
+                {/* Billing Address */}
                 <div className=" auth-wrapper auth-inner row-">
                   <h2 className="text-center">
                     Billing Address <i className="fas fa-home fa-sm"> </i>
@@ -139,7 +196,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="form-group col-md-9">
-                    <label forhtml="validationDefault02">Email</label>
+                    <label htmlFor="validationDefault02">Email</label>
                     <input
                       type="text"
                       name="email"
@@ -150,20 +207,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="form-group col-md-9">
-                    <label forhtml="validationDefaultUsername">City</label>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      className="form-control"
-                      placeholder="City"
-                      aria-describedby="inputGroupPrepend2"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group col-md-9">
-                    <label forhtml="validationDefault03">Address</label>
+                    <label htmlFor="validationDefault03">Address</label>
                     <input
                       type="text"
                       className="form-control"
@@ -174,7 +218,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="form-group col-md-9">
-                    <label forhtml="validationDefault04">State</label>
+                    <label htmlFor="validationDefault04">State</label>
                     <input
                       type="text"
                       className="form-control"
@@ -184,7 +228,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="form-group col-md-9">
-                    <label forhtml="validationDefault05">Zip</label>
+                    <label htmlFor="validationDefault05">Zip</label>
                     <input
                       type="text"
                       className="form-control"
@@ -201,6 +245,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
 
           <Col>
             <form>
+              {/* Payment Information */}
               <div className="auth-wrapper auth-inner row-2">
                 <h2 className="text-center">
                   Payment Information <i className="fab fa-cc-visa mr-2"></i>
@@ -208,7 +253,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                 </h2>
                 <div className="form-group col-md-9">
                   <div className="col-md-70 mb-6">
-                    <label forhtml="validationDefault01">Name On Card</label>
+                    <label htmlFor="validationDefault01">Name On Card</label>
                     <input
                       type="text"
                       className="form-control "
@@ -218,7 +263,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="col-md-70 mb-9">
-                    <label forhtml="validationDefault02">
+                    <label htmlFor="validationDefault02">
                       Credit Card Number
                     </label>
                     <input
@@ -230,7 +275,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     />
                   </div>
                   <div className="col-md-70 mb-9">
-                    <label forhtml="validationDefaultUsername">Exp.Date</label>
+                    <label htmlFor="validationDefaultUsername">Exp.Date</label>
                     <div className="input-group">
                       <input
                         type="text"
@@ -243,7 +288,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                     </div>
                   </div>
                   <div className="col-md-10 mb-9">
-                    <label forhtml="validationDefaultUsername">CVV</label>
+                    <label htmlFor="validationDefaultUsername">CVV</label>
                     <div className="input-group">
                       <input
                         type="text"
@@ -269,7 +314,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                         feedback="You must agree before submitting."
                       />
                       <div className="text-left">
-                        <label className="form-check-label" forhtml="invalidCheck2">
+                        <label className="form-check-label" htmlFor="invalidCheck2">
                           Agree to terms and conditions
                         </label>
                       </div>
@@ -278,7 +323,7 @@ const currentCartProducts = products.filter(product => currentCart.products && c
                         <button
                           className="btn btn-primary"
                           type="submit"
-                          onClick={() => this.purchased(currentUserId)}
+                          onClick={purchase}
                         >
                           Purchase
                         </button>
@@ -295,4 +340,3 @@ const currentCartProducts = products.filter(product => currentCart.products && c
   );
 }
 export default Checkout;
-

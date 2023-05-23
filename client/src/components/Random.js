@@ -1,21 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import ProductList from "./ProductList";
-import NavBar from "./NavBar";
 
-function Random({ user, filteredProducts, setUser, currentUserId, carts, setCarts, products, setProducts }) {
+function Random({ filteredProducts, currentUserId, user, carts, setCarts }) {
   
   return (
+    <>
+    <br/>
     <div>
-      
-      {/* <NavBar
-        user={user}
-        setUser={setUser}
-        searchItem={searchItem}
-        searchCategory={handleSearchCategory}
-        setSearchTerm={setSearchTerm}
-        current_user_id={currentUserId}
-        carts={carts}
-      /> */}
+      <div>
+      <h1>Hello, Welcome to ShopWave !</h1>
+      <h3>Find great deals on a wide variety of products from independent sellers.</h3>
+      <h3>Start browsing now!</h3>
+    </div>
+    <br/>
+    <br/>
       <ProductList
         products={filteredProducts}
         currentUserId={currentUserId}
@@ -23,6 +21,7 @@ function Random({ user, filteredProducts, setUser, currentUserId, carts, setCart
         setCarts={setCarts}
       />
     </div>
+    </>
   );
 }
 

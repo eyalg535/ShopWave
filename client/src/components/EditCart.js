@@ -1,12 +1,19 @@
 import React from "react";
 import EditOrder from "./EditOrder";
 
-function EditCart({ orders, cart, removeOrder }) {
+function EditCart({ currentCart, removeOrder }) {
+  if (!currentCart || !currentCart.orders) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <div className="row row-cols-1 row-cols-md-3">
-      {orders && orders.map((order, index) => (
-        <EditOrder key={index} order={order} removeOrder={removeOrder}   />
+      {currentCart.orders.map((order) => (
+        <EditOrder
+          key={order.id}
+          order={order}
+          removeOrder={() => removeOrder(order.id)}
+        />
       ))}
     </div>
   );

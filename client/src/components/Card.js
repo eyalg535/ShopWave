@@ -6,13 +6,9 @@ function Card({
   title,
   description,
   image,
-  image1,
-  image2,
-  image3,
   price,
   carts,
   currentUserId,
-  reviews,
   setCarts,
   setAddedToCart,
   getProductById,
@@ -20,24 +16,36 @@ function Card({
   
   const addToCart = async () => {
     const newProd = await getProductById(product.id); // Retrieve product by ID
-    const cart = carts.length === 1 ? carts[0] : carts.slice(-1)[0];
-    const res = await fetch(`/cart/${cart.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: cart.user_id,
-        products: newProd,
-      }),
-    });
-    if (res.ok) {
-      const updatedCart = await res.json();
-      setCarts(
-        carts.map((cart) => (cart.id === updatedCart.id ? updatedCart : cart))
-      );
-      setAddedToCart(true);
-      setTimeout(() => setAddedToCart(false), 5000);
+    console.log('New Product:', newProd);
+  
+    const cart = carts.length ? (carts.length === 1 ? carts[0] : carts.slice(-1)[0]) : null;
+    console.log('Cart:', cart);
+  
+    if (cart) {
+      const res = await fetch(`/cart/${cart.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: cart.user_id,
+          products: newProd,
+        }),
+      });
+      console.log('Response:', res);
+  
+      if (res.ok) {
+        const updatedCart = await res.json();
+        console.log('Updated Cart:', updatedCart);
+  
+        setCarts(
+          carts.map((cart) => (cart.id === updatedCart.id ? updatedCart : cart))
+        );
+        setAddedToCart(true);
+        setTimeout(() => setAddedToCart(false), 5000);
+      }
     }
   };
+  
+  
 
   const handleAddToCart = async () => {
     if (!currentUserId) {

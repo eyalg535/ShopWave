@@ -5,7 +5,7 @@ function Home({ user }) {
 
   return (
     <div>
-      <h1>Hello {user.username}, Welcome to ShopWave !</h1>
+      <h1>Hello, Welcome to ShopWave !</h1>
       <h3>Find great deals on a wide variety of products from independent sellers.</h3>
       <h3>Start browsing now!</h3>
     </div>
