@@ -1,14 +1,20 @@
 class UsersController < ApplicationController
-  skip_before_action :authorize, only: [:create, :index]
+  skip_before_action :authorize
 
   def create
     user = User.create(user_params)
+    Cart.create(user_id: user.id)
     if user.valid?
       session[:user_id] = user.id
-      render json: user, status: :created
+      render json: { success: true, id: user.id }
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: { success: false }
     end
+  end
+
+  def show
+    current_user = User.find(params[:id])
+    render json: current_user, include: { carts: { include: { orders: { include: :product } } }, orders: { include: :product } }
   end
 
   def index
@@ -16,21 +22,18 @@ class UsersController < ApplicationController
     render json: users
   end
 
-  def show
-    render json: @current_user
-  end
-
-  def add_to_cart
-    product = Product.find(params[:id])
-    cart_item = CartItem.find_or_initialize_by(user: @current_user, product: product)
-    cart_item.quantity += 1
-    cart_item.save
-    render json: cart_item, status: :created
+  def me
+    if session[:user_id]
+      user = User.find(session[:user_id])
+      render json: user
+    else
+      render json: { error: "User not logged in" }, status: :unauthorized
+    end
   end
 
   private
 
   def user_params
-    params.permit(:username, :password, :password_confirmation)
+    params.permit(:username, :password, :password_confirmation, :address, :email)
   end
 end

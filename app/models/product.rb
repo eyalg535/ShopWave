@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
-    has_many :product_reviews
-    has_many :users, through: :product_reviews
+    has_many :orders
+    has_many :carts, through: :orders
+    has_many :reviews
 end
