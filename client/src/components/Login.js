@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { Button, Error, Input, FormField, Label } from "../styles";
 
 export default function Login({ setUser, setCarts }) {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Clear the cart data when a new user logs in
@@ -17,7 +19,7 @@ export default function Login({ setUser, setCarts }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setErrors([]);
+    setIsLoading(true);
     fetch("/login", {
       method: "POST",
       headers: {
@@ -25,6 +27,7 @@ export default function Login({ setUser, setCarts }) {
       },
       body: JSON.stringify({ username, password }),
     }).then((r) => {
+      setIsLoading(false);
       if (r.ok) {
         r.json().then((user) => {
           setUser(user)
@@ -71,15 +74,10 @@ export default function Login({ setUser, setCarts }) {
               </div>
               <br />
               <button input="submit" className="btn btn-primary">
-                Login
-              </button>
-              {errors.length > 0 && (
-                <div className="text-left" role="alert">
-                  {errors.map((error) => (
-                    <div key={error}>{error}</div>
-                  ))}
-                </div>
-              )}
+                {isLoading ? "Loading..." : "Login"}</button>
+              {errors.map((err) => (
+                <Error key={err}>{err}</Error>
+              ))}
               <div className="mt-3">
                 Don't have an account? <Link to="/signup">Sign up</Link> now.
               </div>

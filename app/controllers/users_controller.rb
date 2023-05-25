@@ -6,9 +6,9 @@ class UsersController < ApplicationController
     Cart.create(user_id: user.id)
     if user.valid?
       session[:user_id] = user.id
-      render json: { success: true, id: user.id }
+      render json: user, status: :created
     else
-      render json: { success: false }
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { Button, Error, Input, FormField, Label, Textarea } from "../styles";
 
 export default function SignUp({ setUser }) {
   const [username, setUsername] = useState("");
@@ -10,11 +11,14 @@ export default function SignUp({ setUser }) {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate()
 
-  
   function handleSubmit(e) {
     e.preventDefault();
+    setErrors([]);
+    setIsLoading(true);
     fetch("/signup", {
       method: "POST",
       headers: {
@@ -22,17 +26,20 @@ export default function SignUp({ setUser }) {
       },
       body: JSON.stringify({
         username,
-          password,
-          password_confirmation: passwordConfirmation,
-          address,
-          email,
+        password,
+        password_confirmation: passwordConfirmation,
+        address,
+        email,
       }),
     }).then((r) => {
+      setIsLoading(false);
       if (r.ok) {
         r.json().then((user) => {
           setUser(user)
-          navigate('/');
+          navigate('/')
         });
+      } else {
+        r.json().then((err) => setErrors(err.errors));
       }
     });
   }
@@ -106,8 +113,10 @@ export default function SignUp({ setUser }) {
                 </div>
                 <br />
                 <button input="submit" className="btn btn-primary">
-                  Register
-                </button>
+                  {isLoading ? "Loading..." : "Sign Up"}</button>
+                {errors.map((err) => (
+                  <Error key={err}>{err}</Error>
+                ))}
               </div>
             </form>
           </div>
