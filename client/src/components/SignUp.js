@@ -12,30 +12,29 @@ export default function SignUp({ setUser }) {
   const [email, setEmail] = useState("");
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
+  
+  function handleSubmit(e) {
     e.preventDefault();
-    try {
-      const res = await fetch("/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
+    fetch("/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
           password,
           password_confirmation: passwordConfirmation,
           address,
           email,
-        }),
-      });
-      if (res.ok) {
-        const user = await res.json();
-        setUser(user);
-        navigate('/');
+      }),
+    }).then((r) => {
+      if (r.ok) {
+        r.json().then((user) => {
+          setUser(user)
+          navigate('/');
+        });
       }
-    } catch (error) {
-      console.error(error);
-    }
+    });
   }
 
   return (
