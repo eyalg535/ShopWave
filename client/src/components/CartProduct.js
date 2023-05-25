@@ -5,12 +5,12 @@ function CartProduct({ order, product, removeOrder }) {
   return (
     <div>
       <CardCart
-         image={product.image}
-         title={product.title}
-         description={product.description}
-         price={product.price}
-         order={order}
-         removeOrder={removeOrder}
+        image={product.image}
+        title={product.title}
+        description={product.description}
+        price={product.price}
+        order={order}
+        removeOrder={removeOrder}
       />
     </div>
   );

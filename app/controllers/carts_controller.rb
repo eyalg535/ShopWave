@@ -50,7 +50,7 @@ class CartsController < ApplicationController
   
   
   def checkout
-    user = User.find(params[:id])
+    user = User.find(params[:user_id])
     cart = user.carts.last
     render json: cart, include: { orders: { include: :product } }
   end

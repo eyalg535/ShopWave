@@ -5,8 +5,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
 
-function Checkout({ user, currentUserId, products, setCarts, orders }) {
-  const navigate = useNavigate()
+function Checkout({ user, currentUserId, products, setCarts, setProducts }) {
+  const navigate = useNavigate();
   const [currentCart, setCurrentCart] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,12 +23,23 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
       setIsLoading(false);
     };
 
-    if (currentUserId) {
+    if (user) {
       fetchCartData();
     }
-  }, [currentUserId]);
+  }, [currentUserId, user]);
 
   const purchase = async () => {
+    // Get the payment information details
+    const cardName = document.getElementById("cname").value;
+    const cardNumber = document.getElementById("ccnum").value;
+    const expirationDate = document.getElementById("expd").value;
+    const cvv = document.getElementById("cvvid").value;
+
+    // Add validation for empty payment information details
+    if (!cardName || !cardNumber || !expirationDate || !cvv) {
+      alert("Please fill in all the payment information details.");
+      return;
+    }
     try {
       const res = await fetch("/carts", {
         method: "POST",
@@ -38,28 +49,25 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
           orders: currentCart.orders,
         }),
       });
-  
+
       if (res.ok) {
         // Fetch the newly created cart data
         const cartResponse = await fetch(`/users/${currentUserId}/carts`);
         const cartData = await cartResponse.json();
-  
+
         // Find the latest cart (assuming it's the first one in the response)
         const latestCart = cartData.carts[0];
-  
+
         // Update the current cart with the newly created cart
         setCurrentCart(latestCart);
-  
-        // Clear the current cart
-        // setCurrentCart(null);
-  
+
         // Remove the purchased product from the products list
         const purchasedProductIds = currentCart.orders.map((order) => order.product.id);
         const updatedProducts = products.filter(
           (product) => !purchasedProductIds.includes(product.id)
         );
-        setCarts(updatedProducts);
-  
+        setProducts(updatedProducts);
+
         // Delete the purchased product from the API
         await Promise.all(
           purchasedProductIds.map((productId) =>
@@ -71,9 +79,9 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
       } else {
         console.error("Failed to purchase. Response:", res);
       }
-  
+
       // Navigate back to the home page
-      navigate("/");
+      navigate("/productspage");
     } catch (error) {
       console.error(error);
     }
@@ -130,7 +138,7 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
     return <p>Loading cart data...</p>;
   }
 
-  if (!currentUserId) {
+  if (!user) {
     return <p>Please log in to view the cart.</p>;
   }
 
@@ -160,7 +168,6 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
         <EditCart
           currentCart={currentCart}
           removeOrder={(orderId) => removeOrder(orderId)}
-          purchase={purchase} // Pass the purchase function as a prop
         />
       </div>
 
@@ -242,7 +249,6 @@ function Checkout({ user, currentUserId, products, setCarts, orders }) {
               </form>
             </div>
           </Col>
-
           <Col>
             <form>
               {/* Payment Information */}

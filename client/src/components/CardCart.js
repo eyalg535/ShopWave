@@ -7,7 +7,6 @@ function CardCart({ image, title, price, removeOrder }) {
         <img src={image} className="card-img-top" alt="..." />
         <div className="card-body">
           <h5 className="card-title">{title}</h5>
-          {/* <p className="card-text">{description}</p> */}
         </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item">Price: ${price}</li>
@@ -16,7 +15,7 @@ function CardCart({ image, title, price, removeOrder }) {
           <button
             type="button"
             className="btn btn-danger mr-2 md-"
-             onClick={removeOrder}
+            onClick={removeOrder}
           >
             Remove
           </button>

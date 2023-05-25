@@ -35,7 +35,6 @@ export default function Login({ setUser, setCarts }) {
       }
     });
   }
-  
 
   return (
     <Container>
@@ -44,50 +43,50 @@ export default function Login({ setUser, setCarts }) {
       <br />
       <br />
       <Row>
-      <Col>
-    <div className=" auth-wrapper auth-inner row-">
-      <form onSubmit={handleSubmit} >
-        <h1 >
-          Login <i className="fas fa-home fa-sm"> </i>
-        </h1>
-        <div className="form-group col-md-9">
-          <label htmlFor="username">Username </label>
-          <input
-            className="form-control"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-          />
-        </div>
-        <div className="form-group col-md-9">
-          <label htmlFor="exampleInputPassword1">Password </label>
-          <input
-            className="form-control"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
-        </div>
-        <br />
-        <button input="submit" className="btn btn-primary">
-          Login
-        </button>
-        {errors.length > 0 && (
-  <div className="text-left" role="alert">
-    {errors.map((error) => (
-      <div key={error}>{error}</div>
-    ))}
-  </div>
-)}
-        <div className="mt-3">
-          Don't have an account? <Link to="/signup">Sign up</Link> now.
-        </div>
-      </form>
-    </div>
-    </Col>
-    </Row>
+        <Col>
+          <div className=" auth-wrapper auth-inner row-">
+            <form onSubmit={handleSubmit} >
+              <h1 >
+                Login <i className="fas fa-home fa-sm"> </i>
+              </h1>
+              <div className="form-group col-md-9">
+                <label htmlFor="username">Username </label>
+                <input
+                  className="form-control"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                />
+              </div>
+              <div className="form-group col-md-9">
+                <label htmlFor="exampleInputPassword1">Password </label>
+                <input
+                  className="form-control"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                />
+              </div>
+              <br />
+              <button input="submit" className="btn btn-primary">
+                Login
+              </button>
+              {errors.length > 0 && (
+                <div className="text-left" role="alert">
+                  {errors.map((error) => (
+                    <div key={error}>{error}</div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-3">
+                Don't have an account? <Link to="/signup">Sign up</Link> now.
+              </div>
+            </form>
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 }

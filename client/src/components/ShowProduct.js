@@ -1,18 +1,8 @@
-import React, { useState } from "react";
-import NavBar from "./NavBar";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Carousel, Card, ListGroup } from "react-bootstrap";
 
-const ShowProduct = ({ product, user, carts }) => {
-  const [showMore, setShowMore] = useState(false);
-  // const addToCart = (prod) => {
-  //   let newProd = {
-  //     title: prod.title,
-  //     price: prod.price,
-  //     description: prod.description,
-  //     image: prod.image,
-  //   };
-  // };
+const ShowProduct = ({ product }) => {
 
   if (!product) {
     return null;
@@ -64,7 +54,6 @@ const ShowProduct = ({ product, user, carts }) => {
                 src={product.image3}
                 alt="Forth slide"
               />
-
               <Carousel.Caption></Carousel.Caption>
             </Carousel.Item>
           </Carousel>
@@ -92,7 +81,7 @@ const ShowProduct = ({ product, user, carts }) => {
                   <p>Price: ${product.price}</p>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Link to="/"><button type="button" className="btn btn-primary mr-2">
+                  <Link to="/productspage"><button type="button" className="btn btn-primary mr-2">
                     See less...
                   </button></Link>
                 </ListGroup.Item>

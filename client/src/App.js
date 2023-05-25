@@ -5,7 +5,8 @@ import "./App.css";
 import NavBar from './components/NavBar';
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
-import Random from "./components/Random";
+import Home from "./components/Home";
+import ProductsPage from "./components/ProductsPage";
 import ShowProduct from "./components/ShowProduct";
 import Checkout from "./components/Checkout";
 
@@ -142,11 +143,12 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login setUser={setUser} setCarts={setCarts} />} />
           <Route path="/signup" element={<SignUp setUser={setUser} />} />
+          <Route path="/" element={<Home user={user} />} />
           <Route
-            path="/"
+            path="/productspage"
             element={
               filteredProducts && filteredProducts.length > 0 ? (
-                <Random
+                <ProductsPage
                   filteredProducts={filteredProducts}
                   currentUserId={currentUserId}
                   carts={carts}
